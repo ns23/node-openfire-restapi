@@ -12,7 +12,7 @@ export interface Properties {
   property: IPProperty[];
 }
 
-export interface User {
+export interface IUser {
   username: string;
   name: string;
   email: string;

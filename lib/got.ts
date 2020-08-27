@@ -18,9 +18,9 @@ export class Rest {
     });
   }
 
-  async get(url: string, options?: OptionsOfTextResponseBody): Promise<Object | Error> {
+  async get(url: string, options?: OptionsOfTextResponseBody): Promise<object | Error> {
     try {
-      const response = await this.instance.get(url, options);
+      const response = await this.instance.get(url, options) as Response<Object>;
       return response.body;
     } catch (error) {
       throw new Error(error);
@@ -36,9 +36,9 @@ export class Rest {
     }
   }
 
-  async put(url: string, options?: OptionsOfTextResponseBody): Promise<Object | Error> {
+  async put(url: string, options?: OptionsOfTextResponseBody): Promise<object | Error> {
     try {
-      const response = await this.instance.put(url, options);
+      const response = await this.instance.put(url, options) as Response<Object>;
       return response.body;
     } catch (error) {
       throw new Error(error);
