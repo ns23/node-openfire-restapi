@@ -1,17 +1,22 @@
-/**
- * All the endpoints related to chatroom
- * @see https://www.igniterealtime.org/projects/openfire/plugins/1.3.8/restAPI/readme.html#chat-room-related-rest-endpoints
- */
-
 import { Rest } from '../got';
 import { Response } from 'got/dist/source';
 import { IChatroom, Roles, ChatroomsTypes } from '../interfaces/Chatroom';
 
+/**
+ * All the endpoints related to chatroom
+ * @see https://www.igniterealtime.org/projects/openfire/plugins/1.3.8/restAPI/readme.html#chat-room-related-rest-endpoints
+ */
 class Chatroom {
   private endPoint = 'chatrooms';
   constructor(private rest: Rest) {}
 
-  async createChatroom(data: IChatroom): Promise<{ statusMessage: string | undefined; statusCode: number }> {
+  /**
+   * Create a chat room
+   * @description Endpoint to create a new chat room.
+   */
+  async createChatroom(
+    data: IChatroom,
+  ): Promise<{ statusMessage: string | undefined; statusCode: number }> {
     const { statusCode, statusMessage } = (await this.rest.post(this.endPoint, {
       json: data,
     })) as Response;
@@ -32,6 +37,10 @@ class Chatroom {
     return response.statusCode;
   }
 
+  /**
+   * Retrieve a chat room
+   * @description Endpoint to get information over specific chat room
+   */
   async getChatroom(roomname: string, servicename = 'conference'): Promise<IChatroom> {
     const url = `${this.endPoint}/${roomname}`;
     const room = (await this.rest.get(url, {
@@ -43,24 +52,40 @@ class Chatroom {
     return room;
   }
 
+  /**
+   * Retrieve chat room participants
+   * @description Endpoint to get all participants with a role of specified room.
+   */
   async getChatroomParticipants(roomname: string, servicename = 'conference') {
     const url = `${this.endPoint}/${roomname}/participants`;
     const participants = (await this.rest.get(url, { searchParams: { servicename } })) as Object;
     return participants;
   }
 
+  /**
+   * Retrieve chat room occupants
+   * Endpoint to get all occupants (all roles / affiliations) of a specified room.
+   */
   async getChatroomOccupants(roomname: string, servicename = 'conference'): Promise<Object> {
     const url = `${this.endPoint}/${roomname}/occupants`;
     const occupants = (await this.rest.get(url, { searchParams: { servicename } })) as Object;
     return occupants;
   }
 
+  /**
+   * Retrieve chat room message history
+   * @description Endpoint to get the chat message history of a specified room.
+   */
   async getChatroomHistory(roomname: string, servicename = 'conference'): Promise<Object> {
     const url = `${this.endPoint}/${roomname}/chathistory`;
     const chatHistory = (await this.rest.get(url, { searchParams: { servicename } })) as Object;
     return chatHistory;
   }
 
+  /**
+   * Retrieve all chat rooms
+   * @description Endpoint to get all chat rooms
+   */
   async getAllChatrooms(
     search: string = '',
     type: ChatroomsTypes = 'public',
@@ -79,13 +104,26 @@ class Chatroom {
     return rooms;
   }
 
+  /**
+   * Delete a chat room
+   * @description Endpoint to delete a chat room.
+   */
   async deleteChatroom(roomname: string, servicename = 'conference'): Promise<number> {
     const url = `${this.endPoint}/${roomname}`;
     const status = await this.rest.delete(url, { searchParams: { servicename } });
     return status.statusCode;
   }
 
-  async addUserToChatroom(roomname: string, username: string, roles: Roles, servicename = 'conference') {
+  /**
+   * Add user with role to chat room
+   * @description Endpoint to add a new user with role to a room.
+   */
+  async addUserToChatroom(
+    roomname: string,
+    username: string,
+    roles: Roles,
+    servicename = 'conference',
+  ) {
     const url = `${this.endPoint}/${roomname}/${roles}/${username}`;
     const { statusCode, statusMessage } = (await this.rest.post(url, {
       searchParams: { servicename },
@@ -96,7 +134,16 @@ class Chatroom {
     };
   }
 
-  async addGroupToChatroom(roomname: string, groupname: string, roles: Roles, servicename = 'conference') {
+  /**
+   * Add group with role to chat room
+   * @description Endpoint to add a new group with role to a room.
+   */
+  async addGroupToChatroom(
+    roomname: string,
+    groupname: string,
+    roles: Roles,
+    servicename = 'conference',
+  ) {
     const url = `${this.endPoint}/${roomname}/${roles}/${groupname}`;
     const { statusCode, statusMessage } = (await this.rest.post(url, {
       searchParams: { servicename },
@@ -107,6 +154,10 @@ class Chatroom {
     };
   }
 
+  /**
+   * Invite user to a chat Room
+   * @description Endpoint to invite a user to a room.
+   */
   async inviteUserToChatroom(roomname: string, username: string, reason = '') {
     const url = `${this.endPoint}/${roomname}/invite/${username}`;
     const body = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -123,6 +174,21 @@ class Chatroom {
       statusCode: resp.statusCode,
       statusMessage: resp.statusMessage,
     };
+  }
+
+  /**
+   * Delete a user from a chat room
+   * Endpoint to remove a room user role.
+   */
+  async deleteUserFromChatroom(
+    roomname: string,
+    username: string,
+    roles: Roles,
+    servicename = 'conference',
+  ): Promise<number> {
+    const url = `${this.endPoint}/${roomname}/${roles}/${username}`;
+    const status = await this.rest.delete(url, { searchParams: { servicename } });
+    return status.statusCode;
   }
 }
 
