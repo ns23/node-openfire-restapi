@@ -20,14 +20,14 @@ export class Rest {
 
   async get(url: string, options?: OptionsOfTextResponseBody): Promise<object | Error> {
     try {
-      const response = await this.instance.get(url, options) as Response<Object>;
+      const response = (await this.instance.get(url, options)) as Response<Object>;
       return response.body;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async post(url: string, options?: OptionsOfTextResponseBody): Promise<Response | HTTPError> {
+  async post(url: string, options?: OptionsOfTextResponseBody): Promise<Response> {
     try {
       const response = await this.instance.post(url, options);
       return response;
@@ -36,16 +36,16 @@ export class Rest {
     }
   }
 
-  async put(url: string, options?: OptionsOfTextResponseBody): Promise<object | Error> {
+  async put(url: string, options?: OptionsOfTextResponseBody): Promise<Response> {
     try {
-      const response = await this.instance.put(url, options) as Response<Object>;
-      return response.body;
+      const response = (await this.instance.put(url, options)) as Response<Object>;
+      return response;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async delete(url: string, options?: OptionsOfTextResponseBody): Promise<Response | Error> {
+  async delete(url: string, options?: OptionsOfTextResponseBody): Promise<Response> {
     try {
       const response = await this.instance.delete(url, options);
       return response;

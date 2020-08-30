@@ -29,7 +29,7 @@ export interface IParamUser {
 }
 
 export interface IRetriveUsersResponse {
-  users: User[];
+  users: IUser[];
 }
 
 export interface IRetriveUserSearch {
