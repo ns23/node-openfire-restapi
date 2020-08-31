@@ -29,6 +29,7 @@ class Chatroom {
   async updateChatroom(data: IChatroom, servicename = 'conference'): Promise<number> {
     const url = `${this.endPoint}/${data.roomName}`;
     const response = await this.rest.put(url, {
+      json: data,
       searchParams: {
         servicename,
       },

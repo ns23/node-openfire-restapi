@@ -3,6 +3,7 @@ export interface IChatroom {
     roomName: string,
     naturalName?: string,
     subject?: string,
+    description?:string,
     creationDate?: string,
     modificationDate?: string,
     maxUsers?: number,
