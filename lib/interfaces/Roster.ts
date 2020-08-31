@@ -2,7 +2,7 @@ export interface RosterItem {
   jid: string;
   nickname: string;
   subscriptionType: number;
-  groups: any[];
+  groups: Array<string>;
 }
 
 export interface RosterObject {

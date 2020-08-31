@@ -1,8 +1,9 @@
 import { Rest } from '../got';
 import { URLSearchParams } from 'url';
 import { IParamUser, IRetriveUserSearch, IRetriveUsersResponse, IUser } from './../interfaces/User';
-import { RosterObject } from '../interfaces/Roster';
+import { RosterObject, RosterItem } from '../interfaces/Roster';
 import { Response } from 'got/dist/source';
+import Helper from '../helper';
 
 class User {
   private endPoint = 'users';
@@ -63,11 +64,10 @@ class User {
    * Update a user
    * @description Endpoint to update / rename a user
    */
-  async updateUser(username: string, data: IParamUser): Promise<IUser> {
+  async updateUser(username: string, data: IParamUser): Promise<number> {
     const endPoint = `users/${username}`;
     const response = await this.rest.put(endPoint, { json: data });
-    const user = response.body as IUser;
-    return user;
+    return response.statusCode;
   }
 
   /**
@@ -108,14 +108,14 @@ class User {
    * The user will be kicked if the user is online.
    */
   async lockoutUser(username: string): Promise<number> {
-    const url = `/lockouts/${username}`;
-    const { statusCode } = await this.rest.delete(url);
+    const url = `lockouts/${username}`;
+    const { statusCode } = await this.rest.post(url);
     return statusCode;
   }
 
   async unlockUser(username: string): Promise<number> {
-    const url = `/lockouts/${username}`;
-    const { statusCode } = await this.rest.post(url);
+    const url = `lockouts/${username}`;
+    const { statusCode } = await this.rest.delete(url);
     return statusCode;
   }
 
@@ -138,9 +138,26 @@ class User {
    * Endpoint to get roster entries (buddies) from a specific user
    */
   async retriveUserRoster(username: string): Promise<RosterObject> {
-    const endPoint = `users/${username}/roster`;
+    const endPoint = `${this.endPoint}/${username}/roster`;
     const rosters = (await this.rest.get(endPoint)) as RosterObject;
     return rosters;
+  }
+
+  /**
+   * Create a user roster entry
+   * !not working
+   */
+  async createUserRooster(username: string, rooster: RosterItem): Promise<number> {
+    const url = `${this.endPoint}/${username}/roster`;
+
+    const body = Helper.makeRoosterBody(rooster);
+    console.log(body);
+    const { statusCode } = await this.rest.post(url, {
+      body,
+      headers: { 'Content-Type': 'application/xml' },
+    });
+
+    return statusCode;
   }
 }
 

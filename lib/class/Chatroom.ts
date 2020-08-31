@@ -165,7 +165,7 @@ class Chatroom {
             <reason>${reason}</reason>
         </mucInvitation>`;
 
-    const resp = await this.rest.post(this.endPoint, {
+    const resp = await this.rest.post(url, {
       body,
       headers: { 'Content-Type': 'application/xml' },
     });
